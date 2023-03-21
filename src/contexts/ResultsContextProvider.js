@@ -1,15 +1,15 @@
-import React, {Children, createContext, useContext,useState} from "react";
+import React, { createContext, useContext,useState} from "react";
 
 const ResultContext = createContext();
 const baseUrl = "'https://google-search83.p.rapidapi.com/google"
 
-export const ResultContextProvider = ({}) =>{
+export const ResultContextProvider = ({children}) =>{
     const [results, setResults] = useState([]);
-    const [isLoading, setIsloading] = useState(false);
-    const [searchItem, setSearchItem] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
+    const [searchTerm, setSearchTerm] = useState('');
 
-    const getResults = async () =>{
-        isLoading(true);
+    const getResults = async (type) =>{
+        setIsLoading(true);
 
         const response = await fetch(`${baseUrl}${type}`, {
             method: 'GET',
@@ -18,18 +18,17 @@ export const ResultContextProvider = ({}) =>{
                 'X-RapidAPI-Host': 'google-search83.p.rapidapi.com'
             }
         })
-
         const data = await response.json();
-
+       
         setResults(data);
-        setIsloading(false)
-
+        setIsLoading(false)
+    }
         return (
-            <ResultContext.Provider value={{getResults, results, SearchItem, isLoading}}>
-                    {Children}
+            <ResultContext.Provider value={{getResults, results, searchTerm, setSearchTerm,isLoading}}>
+                    {children}
             </ResultContext.Provider>
         );
-    }
+    
 }
 
 export const useResultContext = () => useContext(ResultContext);
